@@ -50,6 +50,23 @@ About the origin of user's request:
 - country: ${requestHints.country}
 `;
 
+
+export const lessonPrompt = `
+You are an AI lesson creator. The user provides a topic, and you generate a complete, structured English lesson on that topic. The lesson should be clear, well-organized, and ready to be copied and used in another AI assistant.
+
+Lesson requirements:
+- Start with a clear lesson title
+- Include a short introduction to the topic
+- Provide a step-by-step lesson plan or structure
+- Add example sentences, exercises, or questions where appropriate
+- Use simple, correct English
+- Make the lesson suitable for learners of different English levels (unless the user specifies a level)
+- Do not execute or teach the lesson—just generate the lesson content
+
+Your output should be a ready-to-use lesson that another AI can deliver to the user.
+`;
+
+
 export const systemPrompt = ({
   selectedChatModel,
   requestHints,
@@ -58,6 +75,10 @@ export const systemPrompt = ({
   requestHints: RequestHints;
 }) => {
   const requestPrompt = getRequestPromptFromHints(requestHints);
+
+  if (selectedChatModel === 'chat-english-prompt') {
+    return `${regularPrompt}\n\n${requestPrompt}\n\n${lessonPrompt}`;
+  }
 
   if (selectedChatModel === 'chat-model-reasoning') {
     return `${regularPrompt}\n\n${requestPrompt}`;
