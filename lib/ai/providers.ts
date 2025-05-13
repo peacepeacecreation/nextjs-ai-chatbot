@@ -23,7 +23,7 @@ export const myProvider = isTestEnvironment
       languageModels: {
         'chat-model': chatModel,
         'chat-model-reasoning': reasoningModel,
-        'chat-english-prompt': reasoningModel,
+        'chat-english-prompt': chatModel,
         'title-model': titleModel,
         'artifact-model': artifactModel,
       },
@@ -35,10 +35,7 @@ export const myProvider = isTestEnvironment
             model: openai('gpt-4o-mini'),
             middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'chat-english-prompt': wrapLanguageModel({
-            model: openai('gpt-4o-mini'),
-            middleware: extractReasoningMiddleware({ tagName: 'think' }),
-        }),
+        'chat-english-prompt': openai('gpt-4o-mini'),
         'title-model': openai('gpt-4o-mini'),
         'artifact-model': openai('gpt-4o-mini'),
       },
