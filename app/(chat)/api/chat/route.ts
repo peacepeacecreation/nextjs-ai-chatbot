@@ -16,6 +16,7 @@ import {
   getStreamIdsByChatId,
   saveChat,
   saveMessages,
+  getUserPromptByType,
 } from '@/lib/db/queries';
 import { generateUUID, getTrailingMessageId } from '@/lib/utils';
 import { generateTitleFromUserMessage } from '../../actions';
@@ -148,11 +149,24 @@ export async function POST(request: Request) {
     const streamId = generateUUID();
     await createStreamId({ streamId, chatId: id });
 
+    // Get user prompt for lesson if it exists
+    let userLessonPrompt;
+    if (selectedChatModel === 'chat-english-prompt') {
+      const lessonPrompt = await getUserPromptByType({
+        userId: session.user.id,
+        promptType: 'lesson',
+      });
+      
+      if (lessonPrompt) {
+        userLessonPrompt = lessonPrompt.promptText;
+      }
+    }
+
     const stream = createDataStream({
       execute: (dataStream) => {
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel),
-          system: systemPrompt({ selectedChatModel, requestHints }),
+          system: systemPrompt({ selectedChatModel, requestHints, userLessonPrompt }),
           messages,
           maxSteps: 5,
           experimental_activeTools:

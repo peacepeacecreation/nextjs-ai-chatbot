@@ -27,6 +27,8 @@ import {
   type DBMessage,
   type Chat,
   stream,
+  userPrompt,
+  type UserPrompt,
 } from './schema';
 import type { ArtifactKind } from '@/components/artifact';
 import { generateUUID } from '../utils';
@@ -507,5 +509,34 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
   } catch (error) {
     console.error('Failed to get stream ids by chat id from database');
     throw error;
+  }
+}
+
+/**
+ * Get a user prompt by type
+ */
+export async function getUserPromptByType({
+  userId,
+  promptType,
+}: {
+  userId: string;
+  promptType: string;
+}): Promise<UserPrompt | undefined> {
+  try {
+    const [result] = await db
+      .select()
+      .from(userPrompt)
+      .where(
+        and(
+          eq(userPrompt.userId, userId),
+          eq(userPrompt.promptType, promptType)
+        )
+      )
+      .execute();
+
+    return result;
+  } catch (error) {
+    console.error('Failed to get user prompt by type from database');
+    return undefined;
   }
 }

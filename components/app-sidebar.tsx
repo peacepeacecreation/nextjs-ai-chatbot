@@ -60,6 +60,16 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarHistory user={user} />
+        <div className="px-3 py-2">
+          <Link 
+            href="/prompts"
+            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-accent text-sm"
+            onClick={() => setOpenMobile(false)}
+          >
+            <span>📝</span>
+            <span>Керування промптами</span>
+          </Link>
+        </div>
       </SidebarContent>
       <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
     </Sidebar>
