@@ -32,7 +32,7 @@ export const myProvider = isTestEnvironment
       languageModels: {
         'chat-model': openai('gpt-4o-mini'),
         'chat-model-reasoning': wrapLanguageModel({
-            model: openai('gpt-4.1-mini'),
+            model: openai('gpt-4.1'),
             middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
         'chat-english-prompt': openai('gpt-4o-mini'),
