@@ -17,7 +17,13 @@ function PureSuggestedActions({
   append,
   selectedVisibilityType,
 }: SuggestedActionsProps) {
-  const suggestedActions = [
+  interface SuggestedAction {
+    title: string;
+    label: string;
+    action: string;
+  }
+
+  const suggestedActions: SuggestedAction[] = [
     // {
     //   title: 'What are the advantages',
     //   label: 'of using Next.js?',
