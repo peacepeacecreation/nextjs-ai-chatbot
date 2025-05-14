@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/components/toast';
 import { UserPrompt } from '@/lib/db/schema';
 
-export default function EditPromptPage() {
+function EditPromptContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const promptType = searchParams.get('type');
@@ -223,5 +223,19 @@ export default function EditPromptPage() {
         </form>
       </Card>
     </div>
+  );
+}
+
+export default function EditPromptPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-10">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
+        </div>
+      </div>
+    }>
+      <EditPromptContent />
+    </Suspense>
   );
 }
