@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     await createStreamId({ streamId, chatId: id });
 
     // Get user prompt for lesson if it exists
-    let userLessonPrompt;
+    let userLessonPrompt: string | undefined;
     if (selectedChatModel === 'chat-english-prompt') {
       const lessonPrompt = await getUserPromptByType({
         userId: session.user.id,
