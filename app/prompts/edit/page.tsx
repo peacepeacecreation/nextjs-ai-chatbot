@@ -23,12 +23,10 @@ export default function EditPromptPage() {
 
   useEffect(() => {
     const fetchPrompt = async () => {
-      if (!promptType) {
-        toast({
-          title: 'Помилка',
-          description: 'Не вказано тип промпта для редагування',
-          variant: 'destructive',
-        });
+      if (!promptType) {      toast({
+        type: 'error',
+        description: 'Не вказано тип промпта для редагування'
+      });
         router.push('/');
         return;
       }
@@ -43,12 +41,10 @@ export default function EditPromptPage() {
         const prompts = await response.json();
         const currentPrompt = prompts.find((p: UserPrompt) => p.promptType === promptType);
         
-        if (!currentPrompt) {
-          toast({
-            title: 'Помилка',
-            description: 'Промпт не знайдено',
-            variant: 'destructive',
-          });
+        if (!currentPrompt) {            toast({
+              type: 'error',
+              description: 'Промпт не знайдено'
+            });
           router.push('/');
           return;
         }
@@ -58,9 +54,8 @@ export default function EditPromptPage() {
       } catch (error) {
         console.error('Error fetching prompt:', error);
         toast({
-          title: 'Помилка',
-          description: error instanceof Error ? error.message : 'Не вдалося завантажити промпт',
-          variant: 'destructive',
+          type: 'error',
+          description: error instanceof Error ? error.message : 'Не вдалося завантажити промпт'
         });
       } finally {
         setIsLoading(false);
@@ -75,9 +70,8 @@ export default function EditPromptPage() {
     
     if (!promptText.trim() || !promptType) {
       toast({
-        title: 'Помилка',
-        description: 'Текст промпта не може бути порожнім',
-        variant: 'destructive'
+        type: 'error',
+        description: 'Текст промпта не може бути порожнім'
       });
       return;
     }
@@ -101,17 +95,16 @@ export default function EditPromptPage() {
       }
 
       toast({
-        title: 'Успіх',
-        description: 'Промпт успішно оновлено',
+        type: 'success',
+        description: 'Промпт успішно оновлено'
       });
       
       router.push('/');
     } catch (error) {
       console.error('Помилка при оновленні промпта:', error);
       toast({
-        title: 'Помилка',
-        description: error instanceof Error ? error.message : 'Щось пішло не так',
-        variant: 'destructive',
+        type: 'error',
+        description: error instanceof Error ? error.message : 'Щось пішло не так'
       });
     } finally {
       setIsSaving(false);
@@ -135,17 +128,16 @@ export default function EditPromptPage() {
       }
 
       toast({
-        title: 'Успіх',
-        description: 'Промпт успішно видалено',
+        type: 'success',
+        description: 'Промпт успішно видалено'
       });
       
       router.push('/');
     } catch (error) {
       console.error('Помилка при видаленні промпта:', error);
       toast({
-        title: 'Помилка',
-        description: error instanceof Error ? error.message : 'Щось пішло не так',
-        variant: 'destructive',
+        type: 'error',
+        description: error instanceof Error ? error.message : 'Щось пішло не так'
       });
     } finally {
       setIsDeleting(false);

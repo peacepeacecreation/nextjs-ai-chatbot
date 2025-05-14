@@ -25,9 +25,8 @@ export default function PromptsListPage() {
       } catch (error) {
         console.error('Error fetching prompts:', error);
         toast({
-          title: 'Помилка',
-          description: error instanceof Error ? error.message : 'Не вдалося завантажити промпти',
-          variant: 'destructive',
+          type: 'error',
+          description: error instanceof Error ? error.message : 'Не вдалося завантажити промпти'
         });
       } finally {
         setIsLoading(false);

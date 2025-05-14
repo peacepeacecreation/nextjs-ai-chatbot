@@ -21,9 +21,8 @@ export default function AddPromptsPage() {
     
     if (!promptText.trim()) {
       toast({
-        title: 'Помилка',
-        description: 'Текст промпта не може бути порожнім',
-        variant: 'destructive'
+        type: 'error',
+        description: 'Текст промпта не може бути порожнім'
       });
       return;
     }
@@ -47,8 +46,8 @@ export default function AddPromptsPage() {
       }
 
       toast({
-        title: 'Успіх',
-        description: 'Промпт успішно додано',
+        type: 'success',
+        description: 'Промпт успішно додано'
       });
       
       // Reset form
@@ -59,9 +58,8 @@ export default function AddPromptsPage() {
     } catch (error) {
       console.error('Помилка при додаванні промпта:', error);
       toast({
-        title: 'Помилка',
-        description: error instanceof Error ? error.message : 'Щось пішло не так',
-        variant: 'destructive',
+        type: 'error',
+        description: error instanceof Error ? error.message : 'Щось пішло не так'
       });
     } finally {
       setIsLoading(false);
