@@ -149,28 +149,47 @@ export async function POST(request: Request) {
     const streamId = generateUUID();
     await createStreamId({ streamId, chatId: id });
 
-    // Get user prompt for lesson if it exists
-    let userLessonPrompt: string | undefined;
-    if (selectedChatModel === 'chat-english-prompt') {
-      const lessonPrompt = await getUserPromptByType({
-        userId: session.user.id,
-        promptType: 'lesson',
-      });
+    // Handle custom prompts based on selected model
+    let userPromptText: string | undefined;
+    let promptType: string | undefined;
+    
+    // Check if it's a custom prompt
+    if (selectedChatModel.startsWith('custom-')) {
+      // Extract the prompt type from the custom model id
+      promptType = selectedChatModel.replace('custom-', '');
       
-      if (lessonPrompt) {
-        userLessonPrompt = lessonPrompt.promptText;
+      // If we have a prompt type, fetch the prompt
+      if (promptType) {
+        const userPrompt = await getUserPromptByType({
+          userId: session.user.id,
+          promptType,
+        });
+        
+        if (userPrompt) {
+          userPromptText = userPrompt.promptText;
+        }
       }
     }
 
     const stream = createDataStream({
       execute: (dataStream) => {
+        // Determine which model to use - for custom prompts we use the default model
+        const modelToUse = selectedChatModel.startsWith('custom-') 
+          ? 'chat-english-prompt' 
+          : selectedChatModel;
+        
         const result = streamText({
-          model: myProvider.languageModel(selectedChatModel),
-          system: systemPrompt({ selectedChatModel, requestHints, userLessonPrompt }),
+          model: myProvider.languageModel(modelToUse),
+          system: systemPrompt({ 
+            selectedChatModel: selectedChatModel, 
+            requestHints, 
+            userPromptText,
+            promptType 
+          }),
           messages,
           maxSteps: 5,
           experimental_activeTools:
-            selectedChatModel === 'chat-model-reasoning'
+            modelToUse === 'chat-model-reasoning'
               ? []
               : [
                   'getWeather',
@@ -253,8 +272,7 @@ export async function POST(request: Request) {
     }
   } catch (_) {
     return new Response('An error occurred while processing your request!', {
-      status: 500,
-    });
+      status: 500 });
   }
 }
 

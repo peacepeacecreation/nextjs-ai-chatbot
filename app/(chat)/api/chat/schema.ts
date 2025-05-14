@@ -23,7 +23,21 @@ export const postRequestBodySchema = z.object({
       )
       .optional(),
   }),
-  selectedChatModel: z.enum(['chat-english-prompt', 'chat-model', 'chat-model-reasoning']),
+  selectedChatModel: z.string()
+    .refine(
+      (val) => {
+        // Allow standard models
+        if (val === 'chat-english-prompt' || val === 'chat-model' || val === 'chat-model-reasoning') {
+          return true;
+        }
+        // Allow custom models that start with 'custom-'
+        if (val.startsWith('custom-')) {
+          return true;
+        }
+        return false;
+      }, 
+      { message: "Must be a valid model ID (standard model or custom model starting with 'custom-')" }
+    ),
   selectedVisibilityType: z.enum(['public', 'private']),
 });
 

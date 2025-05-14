@@ -70,17 +70,21 @@ Your output should be a ready-to-use lesson that another AI can deliver to the u
 export const systemPrompt = ({
   selectedChatModel,
   requestHints,
-  userLessonPrompt,
+  userPromptText,
+  promptType,
 }: {
   selectedChatModel: string;
   requestHints: RequestHints;
-  userLessonPrompt?: string;
+  userPromptText?: string;
+  promptType?: string;
 }) => {
   const requestPrompt = getRequestPromptFromHints(requestHints);
-  const customLessonPrompt = userLessonPrompt || lessonPrompt;
-
-  if (selectedChatModel === 'chat-english-prompt') {
-    return `${regularPrompt}\n\n${requestPrompt}\n\n${customLessonPrompt}`;
+  
+  // Handle custom prompts for all types
+  if (selectedChatModel === 'chat-english-prompt' || selectedChatModel.startsWith('custom-')) {
+    // Use user's custom prompt if provided
+    const customPrompt = userPromptText || '';
+    return `${regularPrompt}\n\n${requestPrompt}\n\n${customPrompt}`;
   }
 
   if (selectedChatModel === 'chat-model-reasoning') {

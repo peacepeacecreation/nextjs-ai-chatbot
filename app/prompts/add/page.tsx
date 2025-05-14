@@ -7,17 +7,33 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/toast';
+
+// A mapping of common prompt types that can be used as suggestions
+const promptTypes: { [key: string]: string } = {
+  'lesson': 'English',
+  'question': 'Запитання',
+  'task': 'Завдання',
+  'story': 'Історія',
+  'custom': 'Власний',
+};
 
 export default function AddPromptsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [promptType, setPromptType] = useState('lesson');
+  const [promptType, setPromptType] = useState('');
   const [promptText, setPromptText] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!promptType.trim()) {
+      toast({
+        type: 'error',
+        description: 'Тип промпта не може бути порожнім'
+      });
+      return;
+    }
     
     if (!promptText.trim()) {
       toast({
@@ -52,6 +68,7 @@ export default function AddPromptsPage() {
       
       // Reset form
       setPromptText('');
+      setPromptType('');
       
       // Redirect to prompts page
       router.push('/prompts');
@@ -82,21 +99,26 @@ export default function AddPromptsPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="promptType">Тип промпта</Label>
-              <Select 
-                value={promptType} 
-                onValueChange={setPromptType}
-              >
-                <SelectTrigger id="promptType">
-                  <SelectValue placeholder="Виберіть тип промпта" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="lesson">English</SelectItem>
-                  {/* <SelectItem value="question">Запитання</SelectItem>
-                  <SelectItem value="task">Завдання</SelectItem>
-                  <SelectItem value="story">Історія</SelectItem>
-                  <SelectItem value="custom">Власний</SelectItem> */}
-                </SelectContent>
-              </Select>
+              <Input
+                id="promptType"
+                placeholder="Введіть тип промпта..."
+                value={promptType}
+                onChange={(e) => setPromptType(e.target.value)}
+              />
+              <div className="flex flex-wrap gap-2 mt-2">
+                {Object.entries(promptTypes).map(([key, label]) => (
+                  <Button 
+                    key={key} 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setPromptType(key)}
+                    className="text-xs"
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
             </div>
             
             <div className="space-y-2">
